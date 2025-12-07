@@ -185,7 +185,9 @@ export function EditTask({ task, open, onOpenChange }: EditTaskProps) {
 											<RadioGroup
 												name={field.name}
 												value={field.state.value}
-												onValueChange={field.handleChange}
+												onValueChange={(value) =>
+													field.handleChange(value as "low" | "medium" | "high")
+												}
 												className="flex flex-row flex-nowrap gap-2"
 											>
 												{priorities.map((priority) => (
