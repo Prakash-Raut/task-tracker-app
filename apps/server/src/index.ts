@@ -1,6 +1,7 @@
 import { auth } from "@task-tracker-app/auth";
 import { logger } from "@task-tracker-app/logger";
 import { toNodeHandler } from "better-auth/node";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import "dotenv/config";
 import express, { type Express } from "express";
@@ -9,6 +10,8 @@ import { requireAuth } from "./middlewares/requireAuth";
 import { taskRouter } from "./task/task-router";
 
 const app: Express = express();
+
+app.use(cookieParser());
 
 app.use(
 	cors({
