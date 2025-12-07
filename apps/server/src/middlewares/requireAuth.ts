@@ -9,23 +9,32 @@ export const requireAuth: RequestHandler = async (
 	next: NextFunction,
 ) => {
 	try {
-		// get the session from Better Auth
+		// Direct console output for debugging
+		console.log("=== AUTH CHECK ===");
+		console.log("Cookies:", req.headers.cookie);
+		console.log("Origin:", req.headers.origin);
+
 		const session = await auth.api.getSession({
 			headers: fromNodeHeaders(req.headers),
 		});
 
+		console.log("Session result:", {
+			hasSession: !!session,
+			hasUser: !!session?.user,
+			sessionId: session?.session?.id,
+		});
+
 		if (!session || !session.user) {
-			// no valid session → unauthorized
+			console.log("❌ No session found - returning 401");
 			return res.status(401).json({ error: "Not authenticated" });
 		}
 
-		// optionally attach session to request for downstream handlers
+		console.log("✅ Session valid, proceeding");
 		req.session = session.session;
 		req.user = session.user;
-
-		// continue
 		next();
 	} catch (err) {
+		console.error("Auth error:", err);
 		logger.error({
 			message: "Auth check error",
 			error: err,

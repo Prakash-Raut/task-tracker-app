@@ -18,6 +18,7 @@ export const auth: Auth = betterAuth({
 			sameSite: "none",
 			secure: true,
 			httpOnly: true,
+			path: "/",
 		},
 	},
 });
