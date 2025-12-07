@@ -13,7 +13,7 @@ import { EditTask } from "./edit-task";
 import { TaskSidebar } from "./sidebar";
 import { TaskFilter, TaskHeader, TaskList, TaskSearch } from "./task";
 
-export function TaskH() {
+export function TaskView() {
 	const {
 		search,
 		setSearch,

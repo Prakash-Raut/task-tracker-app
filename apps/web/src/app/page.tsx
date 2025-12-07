@@ -1,5 +1,5 @@
-import { TaskH } from "@/components/task/t";
+import { TaskView } from "@/components/task";
 
 export default function Home() {
-	return <TaskH />;
+	return <TaskView />;
 }
