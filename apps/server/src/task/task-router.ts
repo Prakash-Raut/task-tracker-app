@@ -25,5 +25,10 @@ taskRouter.put("/:id", (req: Request, res: Response, next: NextFunction) =>
 taskRouter.delete("/:id", (req: Request, res: Response, next: NextFunction) =>
 	taskController.delete(req as AuthRequest, res, next),
 );
+taskRouter.patch(
+	"/:id/status",
+	(req: Request, res: Response, next: NextFunction) =>
+		taskController.changeStatus(req as AuthRequest, res, next),
+);
 
 export { taskRouter };

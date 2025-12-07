@@ -32,6 +32,19 @@ const priorityColors: Record<string, string> = {
 	low: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/50",
 };
 
+const statusColors: Record<string, string> = {
+	todo: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/50",
+	in_progress:
+		"text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/50",
+	done: "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/50",
+};
+
+const statusLabels: Record<string, string> = {
+	todo: "Todo",
+	in_progress: "In Progress",
+	done: "Done",
+};
+
 type TaskSearchProps = {
 	search: string;
 	setSearch: (search: string) => void;
@@ -232,6 +245,7 @@ type TaskListProps = {
 	isLoading: boolean;
 	onEdit: (id: string) => void;
 	onDelete: (id: string) => void;
+	onStatusChange: (id: string, status: "todo" | "in_progress" | "done") => void;
 };
 
 export function TaskList({
@@ -239,6 +253,7 @@ export function TaskList({
 	isLoading,
 	onEdit,
 	onDelete,
+	onStatusChange,
 }: TaskListProps) {
 	if (isLoading) {
 		return <TaskLoading />;
@@ -254,6 +269,7 @@ export function TaskList({
 					task={task}
 					onEdit={(id) => onEdit(id)}
 					onDelete={(id) => onDelete(id)}
+					onStatusChange={(id, status) => onStatusChange(id, status)}
 				/>
 			))}
 		</div>
@@ -264,12 +280,20 @@ type TaskItemProps = {
 	task: Task;
 	onEdit: (id: string) => void;
 	onDelete: (id: string) => void;
+	onStatusChange: (id: string, status: "todo" | "in_progress" | "done") => void;
 };
 
-export default function TaskItem({ task, onEdit, onDelete }: TaskItemProps) {
+export default function TaskItem({
+	task,
+	onEdit,
+	onDelete,
+	onStatusChange,
+}: TaskItemProps) {
 	const priorityColor = priorityColors[task.priority] || priorityColors.medium;
 	const priorityLabel =
 		task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
+	const statusColor = statusColors[task.status] || statusColors.todo;
+	const statusLabel = statusLabels[task.status] || statusLabels.todo;
 
 	const formatDate = (dateString: string | null) => {
 		if (!dateString) return "No due date";
@@ -280,13 +304,19 @@ export default function TaskItem({ task, onEdit, onDelete }: TaskItemProps) {
 		});
 	};
 
+	const handleStatusChange = (checked: boolean) => {
+		const newStatus = checked ? "done" : "todo";
+		onStatusChange(task.id, newStatus);
+	};
+
 	return (
 		<Card className="group flex w-full flex-row gap-2 px-4">
 			<div>
 				<Checkbox
 					id={task.id}
 					className="mt-1 h-5 w-5 cursor-pointer rounded-xl"
-					defaultChecked={task.status === "done"}
+					checked={task.status === "done"}
+					onCheckedChange={handleStatusChange}
 				/>
 			</div>
 			<div className="w-full">
@@ -329,6 +359,11 @@ export default function TaskItem({ task, onEdit, onDelete }: TaskItemProps) {
 					</CardAction>
 				</CardHeader>
 				<CardFooter className="flex flex-wrap items-center gap-1.5 px-0 pt-4 sm:gap-2">
+					<Badge
+						className={`whitespace-nowrap font-medium text-xs sm:text-sm ${statusColor}`}
+					>
+						{statusLabel}
+					</Badge>
 					<Badge
 						className={`whitespace-nowrap font-medium text-xs sm:text-sm ${priorityColor}`}
 					>

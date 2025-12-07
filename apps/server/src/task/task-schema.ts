@@ -26,3 +26,9 @@ export const taskFilterSchema = z.object({
 });
 
 export type TaskFilter = z.infer<typeof taskFilterSchema>;
+
+export const changeStatusSchema = z.object({
+	status: z.enum(["todo", "in_progress", "done"]),
+});
+
+export type ChangeStatusInput = z.infer<typeof changeStatusSchema>;

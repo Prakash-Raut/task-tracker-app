@@ -18,4 +18,7 @@ export const taskApi = {
 		api.put<Task>(`/tasks/${id}`, task),
 
 	deleteTask: (id: string) => api.delete(`/tasks/${id}`),
+
+	changeTaskStatus: (id: string, status: "todo" | "in_progress" | "done") =>
+		api.patch<Task>(`/tasks/${id}/status`, { status }),
 };

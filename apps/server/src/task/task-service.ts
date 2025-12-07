@@ -92,4 +92,24 @@ export class TaskService {
 
 		return deletedTask.id;
 	}
+
+	public async changeStatus(
+		id: string,
+		userId: string,
+		status: "todo" | "in_progress" | "done",
+	): Promise<Task> {
+		await this.getOne(id, userId);
+
+		const [updatedTask] = await db
+			.update(task)
+			.set({ status })
+			.where(and(eq(task.id, id), eq(task.userId, userId)))
+			.returning();
+
+		if (!updatedTask) {
+			throw new Error("Failed to change task status");
+		}
+
+		return updatedTask;
+	}
 }

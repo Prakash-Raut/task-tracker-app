@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useDeleteTask, useTaskFilters, useTasks } from "@/hooks/use-tasks";
+import {
+	useChangeTaskStatus,
+	useDeleteTask,
+	useTaskFilters,
+	useTasks,
+} from "@/hooks/use-tasks";
 import type { Task } from "@/types";
 import { Container } from "../container";
 import { EditTask } from "./edit-task";
@@ -22,6 +27,7 @@ export function TaskH() {
 	const { data: tasks = [], isLoading } = useTasks(params);
 
 	const { mutate: deleteTask } = useDeleteTask();
+	const { mutate: changeTaskStatus } = useChangeTaskStatus();
 
 	const [editingTask, setEditingTask] = useState<Task | null>(null);
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -32,6 +38,13 @@ export function TaskH() {
 			setEditingTask(task);
 			setIsEditDialogOpen(true);
 		}
+	};
+
+	const handleStatusChange = (
+		id: string,
+		newStatus: "todo" | "in_progress" | "done",
+	) => {
+		changeTaskStatus({ id, status: newStatus });
 	};
 
 	const stats = {
@@ -63,6 +76,7 @@ export function TaskH() {
 					isLoading={isLoading}
 					onEdit={handleEdit}
 					onDelete={deleteTask}
+					onStatusChange={handleStatusChange}
 				/>
 			</Container>
 			<EditTask

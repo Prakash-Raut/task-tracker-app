@@ -2,6 +2,7 @@ import type { Logger } from "@task-tracker-app/logger";
 import type { NextFunction, Response } from "express";
 import createHttpError from "http-errors";
 import {
+	changeStatusSchema,
 	createTaskSchema,
 	taskFilterSchema,
 	updateTaskSchema,
@@ -138,5 +139,42 @@ export class TaskController {
 		});
 
 		res.status(200).json(deletedTask);
+	};
+
+	changeStatus = async (
+		req: AuthRequest,
+		res: Response,
+		next: NextFunction,
+	) => {
+		const { id } = req.params;
+
+		if (!id) {
+			return next(createHttpError(400, "Task ID is required"));
+		}
+
+		const validatedData = changeStatusSchema.safeParse(req.body);
+
+		if (!validatedData.success) {
+			return next(createHttpError(400, validatedData.error.message));
+		}
+
+		const { status } = validatedData.data;
+
+		const updatedTask = await this.taskService.changeStatus(
+			id,
+			req.user.id,
+			status,
+		);
+
+		if (!updatedTask) {
+			return next(createHttpError(400, "Failed to change task status"));
+		}
+
+		this.logger.info({
+			message: "Task status changed",
+			task: updatedTask.id,
+		});
+
+		res.status(200).json(updatedTask);
 	};
 }

@@ -92,3 +92,22 @@ export const useUpdateTask = () => {
 		},
 	});
 };
+
+// hook to change task status
+export const useChangeTaskStatus = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({
+			id,
+			status,
+		}: {
+			id: string;
+			status: "todo" | "in_progress" | "done";
+		}) => taskApi.changeTaskStatus(id, status),
+		onSuccess: (_, { id }) => {
+			queryClient.invalidateQueries({ queryKey: ["tasks"] });
+			queryClient.invalidateQueries({ queryKey: ["task", id] });
+		},
+	});
+};
