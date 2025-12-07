@@ -1,6 +1,7 @@
 "use client";
 
 import { LogOutIcon } from "lucide-react";
+import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
@@ -38,7 +39,24 @@ export function Logout() {
 				variant="ghost"
 				size="icon"
 				className="rounded-lg text-rose-600 transition-colors hover:bg-rose-100 dark:hover:bg-rose-900/30"
-				onClick={() => authClient.signOut()}
+				onClick={() => {
+					authClient.signOut({
+						fetchOptions: {
+							onSuccess: () => {
+								toast.success("Signed out successfully", {
+									description: "You've been logged out. See you soon!",
+									duration: 3000,
+								});
+							},
+							onError: () => {
+								toast.error("Sign out failed", {
+									description: "Something went wrong. Please try again.",
+									duration: 4000,
+								});
+							},
+						},
+					});
+				}}
 				disabled={isPending}
 				title="Sign out"
 			>

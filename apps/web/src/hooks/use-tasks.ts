@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { taskApi } from "@/lib/api";
 import type { CreateTaskInput, UpdateTaskInput } from "@/types";
 
@@ -63,6 +64,18 @@ export const useCreateTask = () => {
 		mutationFn: (data: CreateTaskInput) => taskApi.createTask(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["tasks"] });
+			toast.success("Task created successfully!", {
+				description: "Your new task has been added to the list.",
+				duration: 3000,
+			});
+		},
+		onError: (error: any) => {
+			toast.error("Failed to create task", {
+				description:
+					error?.response?.data?.message ||
+					"Something went wrong. Please try again.",
+				duration: 4000,
+			});
 		},
 	});
 };
@@ -75,6 +88,18 @@ export const useDeleteTask = () => {
 		mutationFn: (id: string) => taskApi.deleteTask(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["tasks"] });
+			toast.success("Task deleted successfully!", {
+				description: "The task has been removed from your list.",
+				duration: 3000,
+			});
+		},
+		onError: (error: any) => {
+			toast.error("Failed to delete task", {
+				description:
+					error?.response?.data?.message ||
+					"Something went wrong. Please try again.",
+				duration: 4000,
+			});
 		},
 	});
 };
@@ -89,6 +114,18 @@ export const useUpdateTask = () => {
 		onSuccess: (_, { id }) => {
 			queryClient.invalidateQueries({ queryKey: ["tasks"] });
 			queryClient.invalidateQueries({ queryKey: ["task", id] });
+			toast.success("Task updated successfully!", {
+				description: "Your changes have been saved.",
+				duration: 3000,
+			});
+		},
+		onError: (error: any) => {
+			toast.error("Failed to update task", {
+				description:
+					error?.response?.data?.message ||
+					"Something went wrong. Please try again.",
+				duration: 4000,
+			});
 		},
 	});
 };
@@ -105,9 +142,26 @@ export const useChangeTaskStatus = () => {
 			id: string;
 			status: "todo" | "in_progress" | "done";
 		}) => taskApi.changeTaskStatus(id, status),
-		onSuccess: (_, { id }) => {
+		onSuccess: (_, { id, status }) => {
 			queryClient.invalidateQueries({ queryKey: ["tasks"] });
 			queryClient.invalidateQueries({ queryKey: ["task", id] });
+			const statusLabels: Record<string, string> = {
+				todo: "Todo",
+				in_progress: "In Progress",
+				done: "Completed",
+			};
+			toast.success("Status updated!", {
+				description: `Task marked as ${statusLabels[status] || status}.`,
+				duration: 2500,
+			});
+		},
+		onError: (error: any) => {
+			toast.error("Failed to update status", {
+				description:
+					error?.response?.data?.message ||
+					"Something went wrong. Please try again.",
+				duration: 4000,
+			});
 		},
 	});
 };

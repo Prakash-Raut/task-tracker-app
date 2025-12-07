@@ -30,11 +30,20 @@ export default function SignInForm({
 				},
 				{
 					onSuccess: () => {
+						toast.success("Welcome back!", {
+							description: "You've successfully signed in.",
+							duration: 3000,
+						});
 						router.push("/");
-						toast.success("Sign in successful");
 					},
 					onError: (error) => {
-						toast.error(error.error.message || error.error.statusText);
+						toast.error("Sign in failed", {
+							description:
+								error.error.message ||
+								error.error.statusText ||
+								"Please check your credentials and try again.",
+							duration: 4000,
+						});
 					},
 				},
 			);
@@ -152,7 +161,10 @@ export default function SignInForm({
 							callbackURL: window.location.origin + "/",
 						});
 					} catch (error) {
-						toast.error("Failed to sign in with Google");
+						toast.error("Google sign in failed", {
+							description: "Please try again or use email/password.",
+							duration: 4000,
+						});
 					}
 				}}
 			>

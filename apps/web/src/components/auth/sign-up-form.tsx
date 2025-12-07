@@ -32,11 +32,21 @@ export default function SignUpForm({
 				},
 				{
 					onSuccess: () => {
+						toast.success("Account created!", {
+							description:
+								"Welcome! Your account has been successfully created.",
+							duration: 3000,
+						});
 						router.push("/");
-						toast.success("Sign up successful");
 					},
 					onError: (error) => {
-						toast.error(error.error.message || error.error.statusText);
+						toast.error("Sign up failed", {
+							description:
+								error.error.message ||
+								error.error.statusText ||
+								"Please check your information and try again.",
+							duration: 4000,
+						});
 					},
 				},
 			);
@@ -180,7 +190,10 @@ export default function SignUpForm({
 							callbackURL: window.location.origin + "/", // Add this line
 						});
 					} catch (error) {
-						toast.error("Failed to sign up with Google");
+						toast.error("Google sign up failed", {
+							description: "Please try again or use email/password.",
+							duration: 4000,
+						});
 					}
 				}}
 			>

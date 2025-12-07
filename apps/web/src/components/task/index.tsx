@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import {
 	useChangeTaskStatus,
 	useDeleteTask,
@@ -40,6 +41,24 @@ export function TaskView() {
 		}
 	};
 
+	const handleDelete = (id: string) => {
+		const task = tasks.find((t) => t.id === id);
+		const taskTitle = task?.title || "this task";
+
+		toast.error(`Delete "${taskTitle}"?`, {
+			description: "This action cannot be undone.",
+			duration: 5000,
+			action: {
+				label: "Delete",
+				onClick: () => deleteTask(id),
+			},
+			cancel: {
+				label: "Cancel",
+				onClick: () => {},
+			},
+		});
+	};
+
 	const handleStatusChange = (
 		id: string,
 		newStatus: "todo" | "in_progress" | "done",
@@ -75,7 +94,7 @@ export function TaskView() {
 					tasks={tasks}
 					isLoading={isLoading}
 					onEdit={handleEdit}
-					onDelete={deleteTask}
+					onDelete={handleDelete}
 					onStatusChange={handleStatusChange}
 				/>
 			</Container>

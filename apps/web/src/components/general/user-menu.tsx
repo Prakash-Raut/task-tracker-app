@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -45,7 +46,17 @@ export default function UserMenu() {
 							authClient.signOut({
 								fetchOptions: {
 									onSuccess: () => {
+										toast.success("Signed out successfully", {
+											description: "You've been logged out. See you soon!",
+											duration: 3000,
+										});
 										router.push("/");
+									},
+									onError: () => {
+										toast.error("Sign out failed", {
+											description: "Something went wrong. Please try again.",
+											duration: 4000,
+										});
 									},
 								},
 							});

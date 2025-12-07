@@ -22,7 +22,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 			disableTransitionOnChange
 		>
 			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-			<Toaster richColors />
+			<Toaster />
 		</ThemeProvider>
 	);
 }
