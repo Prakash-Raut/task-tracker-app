@@ -1,7 +1,7 @@
-import { betterAuth, type Auth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@task-tracker-app/db";
 import * as schema from "@task-tracker-app/db/schema/auth";
+import { type Auth, betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 export const auth: Auth = betterAuth({
 	database: drizzleAdapter(db, {

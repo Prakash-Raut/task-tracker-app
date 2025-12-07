@@ -37,7 +37,11 @@
 		"rules": {
 			"recommended": true,
 			"correctness": {
+				"noChildrenProp": "warn",
 				"useExhaustiveDependencies": "info"
+			},
+			"a11y": {
+				"useSemanticElements": "warn"
 			},
 			"nursery": {
 				"useSortedClasses": {
